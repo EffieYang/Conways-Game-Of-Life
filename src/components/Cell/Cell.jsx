@@ -14,7 +14,7 @@ const Cell = memo(({ isAlive, timeSinceDeath }) => {
     if (isAlive) {
       return 'red';
     }
-    const maxTimeSinceDeath = 10;
+    const maxTimeSinceDeath = 200;
     const opacity = 1 - timeSinceDeath / maxTimeSinceDeath;
     return `rgba(0, 0, 0, ${opacity})`;
   };

@@ -8,7 +8,7 @@ const GamePage = () => {
   const [cols, setCols] = useState(20);
   const [livingCells, setLivingCells] = useState(0);
   const [grid, setGrid] = useState(() => generateRandomGrid(rows, cols, 0.2));
-  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [showHeatmap, setShowHeatmap] = useState(true);
   const [error, setError] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [speed, setSpeed] = useState(500); 
