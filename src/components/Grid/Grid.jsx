@@ -9,7 +9,14 @@ const Grid = memo(
         Array.from({ length: cols }, () => 0)
       )
     );
-
+    useEffect(() => {
+      let arr = () =>
+      Array.from({ length: rows }, () =>
+        Array.from({ length: cols }, () => 0)
+        )
+      console.log(timeSinceDeath);
+     setTimeSinceDeath(arr)
+    }, [rows,cols])
     useEffect(() => {
       const livingCells = grid.flat().filter((cell) => cell).length;
       updateLivingCells(livingCells);
@@ -17,6 +24,7 @@ const Grid = memo(
 
     useEffect(() => {
       const updatedTimeSinceDeath = [...timeSinceDeath];
+         console.log(updatedTimeSinceDeath);
       grid.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
           if (!cell) {
@@ -27,22 +35,29 @@ const Grid = memo(
         });
       });
       setTimeSinceDeath(updatedTimeSinceDeath);
-    }, [grid, timeSinceDeath]);
+    }, []);
 
 
     return (
       <div>
         {grid.map((row, rowIndex) => (
           <div key={rowIndex}>
-            {row.map((cell, colIndex) => (
+            {row.map((cell, colIndex) => {
+            // console.log(timeSinceDeath);
+              return(
               <Cell
                 key={`${rowIndex}-${colIndex}`}
                 isAlive={cell}
                 timeSinceDeath={
-                  showHeatmap ? timeSinceDeath[rowIndex][colIndex] : 0
+                  // showHeatmap ? timeSinceDeath[rowIndex][colIndex] : 0
+                  showHeatmap ? rowIndex*colIndex : 0
                 }
+                  rows={rows}
+                  cols={cols}
+                  showHeatmap={showHeatmap}
               />
-            ))}
+            )
+            })}
           </div>
         ))}
       </div>

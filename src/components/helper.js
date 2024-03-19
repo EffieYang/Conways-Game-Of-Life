@@ -1,5 +1,6 @@
 export const generateRandomGrid = (rows, cols, density) => {
   const grid = [];
+  console.log(rows,'rows');
   for (let i = 0; i < rows; i++) {
     const row = [];
     for (let j = 0; j < cols; j++) {
@@ -7,6 +8,7 @@ export const generateRandomGrid = (rows, cols, density) => {
     }
     grid.push(row);
   }
+  console.log(grid);
   return grid;
 };
 

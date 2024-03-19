@@ -8,26 +8,34 @@ const GamePage = () => {
   const [cols, setCols] = useState(20);
   const [livingCells, setLivingCells] = useState(0);
   const [grid, setGrid] = useState(() => generateRandomGrid(rows, cols, 0.2));
-  const [showHeatmap, setShowHeatmap] = useState(true);
+  const [showHeatmap, setShowHeatmap] = useState(false);
   const [error, setError] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [speed, setSpeed] = useState(500); 
 
   const handleDimensionChange = (e) => {
     const { name, value } = e.target;
+    console.log(name,value);
     if (value < 3 || value > 40) {
       setError(`${name} Please enter values between 3 and 40 for width and height.`);
     } else {
       setError('');
-      if (name === 'rows') {
+      if (name == 'rows') {
+       
         setRows(parseInt(value));
+       
       } else {
         setCols(parseInt(value));
       }
-      setGrid(generateRandomGrid(rows, cols, 0.2));
+    
+      
+       
     }
   };
-
+  useEffect(() => {
+    setGrid(generateRandomGrid(rows, cols, 0.2));
+    console.log(rows,cols);
+  }, [rows,cols])
   const resetGrid = () => {
     setGrid(generateRandomGrid(rows, cols, 0.2));
     setIsRunning(false);
