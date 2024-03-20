@@ -6,40 +6,53 @@ import { generateNextGeneration, generateRandomGrid } from '../../components/hel
 const GamePage = () => {
   const [rows, setRows] = useState(20);
   const [cols, setCols] = useState(20);
+  const [tempRows, setTempRows] = useState("20");
+  const [tempCols, setTempCols] = useState("20");
   const [livingCells, setLivingCells] = useState(0);
   const [grid, setGrid] = useState(() => generateRandomGrid(rows, cols, 0.2));
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [error, setError] = useState('');
   const [isRunning, setIsRunning] = useState(false);
-  const [speed, setSpeed] = useState(500); 
 
-  const handleDimensionChange = (e) => {
-    const { name, value } = e.target;
-    console.log(name,value);
-    if (value < 3 || value > 40) {
-      setError(`${name} Please enter values between 3 and 40 for width and height.`);
-    } else {
+  const validateAndSetDimension = (value) => {
+    const parsedValue = parseInt(value, 10);
+    if (!isNaN(parsedValue) && parsedValue >= 3 && parsedValue <= 40) {
+      return parsedValue; // Return the validated numeric value
+    }
+    setError("Please enter numeric values between 3 and 40 for width and height.");
+    return false; // Indicate validation failure
+  };
+
+  const handleDimensionSubmit = (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    const newRows = validateAndSetDimension(tempRows);
+    const newCols = validateAndSetDimension(tempCols);
+
+    if (newRows && newCols) {
+      setRows(newRows);
+      setCols(newCols);
       setError('');
-      if (name == 'rows') {
-       
-        setRows(parseInt(value));
-       
-      } else {
-        setCols(parseInt(value));
-      }
-    
-      
-       
     }
   };
+
   useEffect(() => {
     setGrid(generateRandomGrid(rows, cols, 0.2));
-    console.log(rows,cols);
-  }, [rows,cols])
-  const resetGrid = () => {
+  }, [rows, cols]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setError(''); // Clear error message when user starts typing
+    if (name === 'rows') {
+      setTempRows(value);
+    } else if (name === 'cols') {
+      setTempCols(value);
+    }
+  };
+
+  const resetGrid = useCallback(() => {
     setGrid(generateRandomGrid(rows, cols, 0.2));
     setIsRunning(false);
-  };
+  }, [rows, cols]);
 
   const nextGeneration = () => {
     setGrid((prevGrid) => generateNextGeneration(prevGrid));
@@ -56,8 +69,7 @@ const GamePage = () => {
   const updateLivingCells = useCallback(
     (count) => {
       setLivingCells(count);
-    },
-    [setLivingCells]
+    },[setLivingCells]
   );
 
   useEffect(() => {
@@ -65,35 +77,36 @@ const GamePage = () => {
     if (isRunning) {
       intervalId = setInterval(() => {
         setGrid((prevGrid) => generateNextGeneration(prevGrid));
-      }, speed);
+      }, 100);
     }
     return () => clearInterval(intervalId);
-  }, [isRunning, speed]);
+  }, [isRunning]);
 
 
   return (
     <div className='container'>
-      <div>
+     <form onSubmit={handleDimensionSubmit}>
         <label>
           Height:
           <input
-            type="number"
+            type="text"
             name="rows"
-            value={rows}
-            onChange={handleDimensionChange}
+            value={tempRows}
+            onChange={handleInputChange}
           />
         </label>
         <label>
           Width:
           <input
-            type="number"
+            type="text"
             name="cols"
-            value={cols}
-            onChange={handleDimensionChange}
+            value={tempCols}
+            onChange={handleInputChange}
           />
         </label>
-        {error && <p>{error}</p>}
-      </div>
+        <button type="submit">Submit</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+      </form>
 
       <Grid
         rows={rows}
@@ -109,8 +122,6 @@ const GamePage = () => {
         toggleHeatmap={toggleHeatmap}
         toggleAutoplay={toggleAutoplay}
         isRunning={isRunning}
-        setSpeed={setSpeed}
-        speed={speed}
       />
 
       <p>Currently living cells: {livingCells}</p>

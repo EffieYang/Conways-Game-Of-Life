@@ -1,5 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
-import "./navigation.css";
+import "../../App.css";
 
 const Navigation = () => {
   return (

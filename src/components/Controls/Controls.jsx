@@ -6,13 +6,7 @@ const Controls = ({
   toggleHeatmap,
   toggleAutoplay,
   isRunning,
-  setSpeed,
-  speed,
 }) => {
-  const handleSpeedChange = (e) => {
-    setSpeed(parseInt(e.target.value));
-  };
-
 
   return (
     <div>
@@ -21,20 +15,7 @@ const Controls = ({
         Next frame
       </button>
       <button onClick={toggleHeatmap}>HeatMap</button>
-      <button onClick={toggleAutoplay}>{isRunning ? 'Stop' :
-      'Autoplay'}</button>
-      <label>
-        Speed:
-        <input
-          type="range"
-          min="100"
-          max="1000"
-          value={isRunning ? undefined : speed}
-          onChange={handleSpeedChange}
-          disabled={isRunning}
-        />
-        {speed} millisecond
-      </label>
+      <button onClick={toggleAutoplay}>{isRunning ? 'Stop' : 'Autoplay'}</button>
     </div>
   );
 };
@@ -45,8 +26,6 @@ Controls.propTypes = {
   toggleHeatmap: PropTypes.func.isRequired,
   toggleAutoplay: PropTypes.func.isRequired,
   isRunning: PropTypes.bool.isRequired,
-  setSpeed: PropTypes.func.isRequired,
-  speed: PropTypes.number,
 };
 
 

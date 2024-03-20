@@ -3,61 +3,51 @@ import Cell from '../Cell/Cell';
 import PropTypes from 'prop-types';
 
 const Grid = memo(
-  ({ rows, cols, updateLivingCells, showHeatmap, grid }) => {
+  ({ rows, cols, updateLivingCells, showHeatmap, grid, setGrid }) => {
     const [timeSinceDeath, setTimeSinceDeath] = useState(() =>
-      Array.from({ length: rows }, () =>
-        Array.from({ length: cols }, () => 0)
-      )
+      Array.from({ length: rows }, () => Array.from({ length: cols }, () => 0))
     );
+
     useEffect(() => {
       let arr = () =>
       Array.from({ length: rows }, () =>
         Array.from({ length: cols }, () => 0)
-        )
-      console.log(timeSinceDeath);
+      )
      setTimeSinceDeath(arr)
-    }, [rows,cols])
+    }, [rows, cols, timeSinceDeath])
+
     useEffect(() => {
       const livingCells = grid.flat().filter((cell) => cell).length;
       updateLivingCells(livingCells);
     }, [grid, updateLivingCells]);
 
     useEffect(() => {
-      const updatedTimeSinceDeath = [...timeSinceDeath];
-         console.log(updatedTimeSinceDeath);
-      grid.forEach((row, rowIndex) => {
-        row.forEach((cell, colIndex) => {
-          if (!cell) {
-            updatedTimeSinceDeath[rowIndex][colIndex]++;
-          } else {
-            updatedTimeSinceDeath[rowIndex][colIndex] = 0;
-          }
-        });
-      });
-      setTimeSinceDeath(updatedTimeSinceDeath);
-    }, []);
+      const newTimeSinceDeath = timeSinceDeath.map((row, rowIndex) =>
+        row.map((cellTime, colIndex) => grid[rowIndex][colIndex] ? 0 : cellTime + 1)
+      );
+      setTimeSinceDeath(newTimeSinceDeath);
+    }, [grid, timeSinceDeath]);
+
+    const toggleCellState = (rowIndex, colIndex) => {
+      const newGrid = [...grid];
+      newGrid[rowIndex][colIndex] = !newGrid[rowIndex][colIndex];
+      setGrid(newGrid);
+    };
 
 
     return (
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         {grid.map((row, rowIndex) => (
-          <div key={rowIndex}>
-            {row.map((cell, colIndex) => {
-            // console.log(timeSinceDeath);
-              return(
-              <Cell
-                key={`${rowIndex}-${colIndex}`}
-                isAlive={cell}
-                timeSinceDeath={
-                  // showHeatmap ? timeSinceDeath[rowIndex][colIndex] : 0
-                  showHeatmap ? rowIndex*colIndex : 0
-                }
-                  rows={rows}
-                  cols={cols}
-                  showHeatmap={showHeatmap}
-              />
-            )
-            })}
+          <div key={rowIndex} style={{ display: 'flex' }}>
+            {row.map((isAlive, colIndex) => (
+            <Cell
+              key={`${rowIndex}-${colIndex}`}
+              isAlive={isAlive}
+              timeSinceDeath={timeSinceDeath[rowIndex][colIndex]}
+              toggleCellState={() => toggleCellState(rowIndex, colIndex)}
+              showHeatmap={showHeatmap}
+            />
+          ))}
           </div>
         ))}
       </div>
@@ -71,6 +61,7 @@ Grid.propTypes = {
   updateLivingCells: PropTypes.func.isRequired,
   showHeatmap: PropTypes.bool.isRequired,
   grid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.bool)).isRequired,
+  setGrid: PropTypes.func.isRequired,
 };
 
 Grid.displayName = 'Grid';

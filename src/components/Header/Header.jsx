@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import "./header.css";
+import "../../App.css";
 
 const Header = () => {
   return (
