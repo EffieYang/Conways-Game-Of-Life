@@ -7,7 +7,11 @@ const CreditsPage = () => {
         <li>Xiaoxi Yang</li>
       </ul>
 
-      <p>Github Repo link: <a href="https://github.com/EffieYang/Conways-Game-Of-Life">https://github.com/EffieYang/Conways-Game-Of-Life</a></p>
+      <p>Github Repo link: 
+        <a href="https://github.com/EffieYang/Hanwen-Guo-Xiaoxi-Yang-assignment2">
+        https://github.com/EffieYang/Hanwen-Guo-Xiaoxi-Yang-assignment2
+        </a>
+      </p>
 
     </div>
   )
