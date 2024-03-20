@@ -12,19 +12,23 @@ const GamePage = () => {
   const [grid, setGrid] = useState(() => generateRandomGrid(rows, cols, 0.2));
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [error, setError] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [timeSinceDeath, setTimeSinceDeath] = useState(() => 
+    Array.from({ length: rows }, () => Array.from({ length: cols }, () => 0))
+  );
   const [isRunning, setIsRunning] = useState(false);
 
   const validateAndSetDimension = (value) => {
     const parsedValue = parseInt(value, 10);
     if (!isNaN(parsedValue) && parsedValue >= 3 && parsedValue <= 40) {
-      return parsedValue; // Return the validated numeric value
+      return parsedValue;
     }
     setError("Please enter numeric values between 3 and 40 for width and height.");
-    return false; // Indicate validation failure
+    return false;
   };
 
   const handleDimensionSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
     const newRows = validateAndSetDimension(tempRows);
     const newCols = validateAndSetDimension(tempCols);
 
@@ -41,7 +45,7 @@ const GamePage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setError(''); // Clear error message when user starts typing
+    setError('');
     if (name === 'rows') {
       setTempRows(value);
     } else if (name === 'cols') {
@@ -51,6 +55,11 @@ const GamePage = () => {
 
   const resetGrid = useCallback(() => {
     setGrid(generateRandomGrid(rows, cols, 0.2));
+    setTimeSinceDeath(
+      Array.from({ length: rows }, () =>
+        Array.from({ length: cols }, () => 0)
+      )
+    );
     setIsRunning(false);
   }, [rows, cols]);
 
@@ -114,6 +123,8 @@ const GamePage = () => {
         updateLivingCells={updateLivingCells}
         showHeatmap={showHeatmap}
         grid={grid}
+        setGrid={setGrid}
+        setTimeSinceDeath={setTimeSinceDeath}
       />
 
       <Controls

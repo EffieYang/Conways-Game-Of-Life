@@ -9,14 +9,6 @@ const Grid = memo(
     );
 
     useEffect(() => {
-      let arr = () =>
-      Array.from({ length: rows }, () =>
-        Array.from({ length: cols }, () => 0)
-      )
-     setTimeSinceDeath(arr)
-    }, [rows, cols, timeSinceDeath])
-
-    useEffect(() => {
       const livingCells = grid.flat().filter((cell) => cell).length;
       updateLivingCells(livingCells);
     }, [grid, updateLivingCells]);
@@ -26,12 +18,23 @@ const Grid = memo(
         row.map((cellTime, colIndex) => grid[rowIndex][colIndex] ? 0 : cellTime + 1)
       );
       setTimeSinceDeath(newTimeSinceDeath);
-    }, [grid, timeSinceDeath]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [grid]);
 
     const toggleCellState = (rowIndex, colIndex) => {
-      const newGrid = [...grid];
-      newGrid[rowIndex][colIndex] = !newGrid[rowIndex][colIndex];
-      setGrid(newGrid);
+      setGrid(currentGrid => {
+        return currentGrid.map((row, rIndex) => {
+          if (rIndex === rowIndex) {
+            return row.map((cell, cIndex) => {
+              if (cIndex === colIndex) {
+                return !cell;
+              }
+              return cell;
+            });
+          }
+          return row;
+        });
+      });
     };
 
 
@@ -62,6 +65,7 @@ Grid.propTypes = {
   showHeatmap: PropTypes.bool.isRequired,
   grid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.bool)).isRequired,
   setGrid: PropTypes.func.isRequired,
+  setTimeSinceDeath: PropTypes.func.isRequired,
 };
 
 Grid.displayName = 'Grid';
