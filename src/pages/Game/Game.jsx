@@ -36,12 +36,22 @@ const GamePage = () => {
       setRows(newRows);
       setCols(newCols);
       setError('');
+      setGrid(generateRandomGrid(newRows, newCols, 0.2)); 
+      setTimeSinceDeath(Array.from({ length: newRows }, () => Array.from({ length: newCols }, () => 0)));
     }
   };
 
   useEffect(() => {
     setGrid(generateRandomGrid(rows, cols, 0.2));
   }, [rows, cols]);
+
+  useEffect(() => {
+    const newTimeSinceDeath = timeSinceDeath.map((row, rowIndex) =>
+      row.map((cellTime, colIndex) => grid[rowIndex][colIndex] ? 0 : cellTime + 1)
+    );
+    setTimeSinceDeath(newTimeSinceDeath);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grid]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -124,7 +134,7 @@ const GamePage = () => {
         showHeatmap={showHeatmap}
         grid={grid}
         setGrid={setGrid}
-        setTimeSinceDeath={setTimeSinceDeath}
+        timeSinceDeath={timeSinceDeath}
       />
 
       <Controls

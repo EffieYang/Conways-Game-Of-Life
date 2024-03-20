@@ -1,25 +1,14 @@
-import { useState, useEffect, memo } from 'react';
+import { useEffect, memo } from 'react';
 import Cell from '../Cell/Cell';
 import PropTypes from 'prop-types';
 
 const Grid = memo(
-  ({ rows, cols, updateLivingCells, showHeatmap, grid, setGrid }) => {
-    const [timeSinceDeath, setTimeSinceDeath] = useState(() =>
-      Array.from({ length: rows }, () => Array.from({ length: cols }, () => 0))
-    );
+  ({ updateLivingCells, showHeatmap, grid, setGrid, timeSinceDeath }) => {
 
     useEffect(() => {
       const livingCells = grid.flat().filter((cell) => cell).length;
       updateLivingCells(livingCells);
     }, [grid, updateLivingCells]);
-
-    useEffect(() => {
-      const newTimeSinceDeath = timeSinceDeath.map((row, rowIndex) =>
-        row.map((cellTime, colIndex) => grid[rowIndex][colIndex] ? 0 : cellTime + 1)
-      );
-      setTimeSinceDeath(newTimeSinceDeath);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [grid]);
 
     const toggleCellState = (rowIndex, colIndex) => {
       setGrid(currentGrid => {
@@ -65,7 +54,7 @@ Grid.propTypes = {
   showHeatmap: PropTypes.bool.isRequired,
   grid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.bool)).isRequired,
   setGrid: PropTypes.func.isRequired,
-  setTimeSinceDeath: PropTypes.func.isRequired,
+  timeSinceDeath: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
 };
 
 Grid.displayName = 'Grid';
